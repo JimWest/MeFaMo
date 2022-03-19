@@ -48,3 +48,4 @@ dist/**
 /custom/*.pyo
 /custom/__pycache__
 /*.spec
+/.vscode
