@@ -3,6 +3,45 @@ from pylivelinkface.pylivelinkface import FaceBlendShape
 
 
 class BlendShapeConfig:
+        class CanonicalPpoints:
+
+            # canoncial points mapped from the canoncial face model        
+            # for better understanding of the points, see the canonical face model from mediapipe
+            # https://github.com/google/mediapipe/blob/master/mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png
+
+            eye_right = [33, 133, 160, 159, 158, 144, 145, 153]
+            eye_left = [263, 362, 387, 386, 385, 373, 374, 380]
+            head = [10, 152]
+            nose_tip = 1
+            upper_lip = 13
+            lower_lip = 14
+            upper_outer_lip = 12
+            mouth_corner_left = 291
+            mouth_corner_right = 61
+            lowest_chin = 152
+            upper_head = 10
+            mouth_frown_left = 422
+            mouth_frown_right = 202
+            mouth_left_stretch = 287
+            mouth_right_stretch = 57
+            lowest_lip = 17
+            under_lip = 18
+            over_upper_lip = 164
+            left_upper_press = [40, 80]
+            left_lower_press = [88, 91]
+            right_upper_press = [270, 310]
+            right_lower_press = [318, 321]
+            squint_left = [253, 450]
+            squint_right = [23, 230]            
+            right_brow = 27
+            right_brow_lower = [53, 52, 65]
+            left_brow = 257
+            left_brow_lower = [283, 282, 295]
+            inner_brow = 9
+            upper_nose = 6
+            cheek_squint_left = [359, 342]
+            cheek_squint_right = [130, 113]
+
         # blend shape type, min and max value
         config = {
             FaceBlendShape.EyeBlinkLeft : (0.40, 0.70),

@@ -4,10 +4,7 @@ from pylivelinkface import PyLiveLinkFace, FaceBlendShape
 from blendshape_config import BlendShapeConfig
 from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
 
-points_eye_right = [33, 133, 160, 159, 158, 144, 145, 153]
-points_eye_left = [263, 362, 387, 386, 385, 373, 374, 380]
-points_head = [10, 152]
-noseTip = 1
+
 
 
 class BlendshapeCalculator():
@@ -89,15 +86,15 @@ class BlendshapeCalculator():
         return self._remap(value, min, max)  
 
     def _calculate_mouth_landmarks(self):
-        upper_lip = self._get_landmark(13)
-        upper_outer_lip = self._get_landmark(12)
-        lower_lip = self._get_landmark(14)
+        upper_lip = self._get_landmark(self.blend_shape_config.CanonicalPpoints.upper_lip)
+        upper_outer_lip = self._get_landmark(self.blend_shape_config.CanonicalPpoints.upper_outer_lip)
+        lower_lip = self._get_landmark(self.blend_shape_config.CanonicalPpoints.lower_lip)
 
-        mouth_corner_left = self._get_landmark(291)
-        mouth_corner_right = self._get_landmark(61)
-        lowest_chin = self._get_landmark(152)
-        nose_tip = self._get_landmark(noseTip)
-        upper_head = self._get_landmark(10)
+        mouth_corner_left = self._get_landmark(self.blend_shape_config.CanonicalPpoints.mouth_corner_left)
+        mouth_corner_right = self._get_landmark(self.blend_shape_config.CanonicalPpoints.mouth_corner_right)
+        lowest_chin = self._get_landmark(self.blend_shape_config.CanonicalPpoints.lowest_chin)
+        nose_tip = self._get_landmark(self.blend_shape_config.CanonicalPpoints.nose_tip)
+        upper_head = self._get_landmark(self.blend_shape_config.CanonicalPpoints.upper_head)
 
         mouth_width = math.dist(mouth_corner_left, mouth_corner_right)
         mouth_center = (upper_lip + lower_lip) / 2
@@ -137,18 +134,22 @@ class BlendshapeCalculator():
         self._live_link_face.set_blendshape(
             FaceBlendShape.MouthDimpleRight, mouth_smile_right / 2)
 
-        mouth_frown_left = (mouth_corner_left - self._get_landmark(422))[1]
-        mouth_frown_right = (mouth_corner_right - self._get_landmark(202))[1]
+        mouth_frown_left = (mouth_corner_left - self._get_landmark(self.blend_shape_config.CanonicalPpoints.mouth_frown_left))[1]
+        mouth_frown_right = (mouth_corner_right - self._get_landmark(self.blend_shape_config.CanonicalPpoints.mouth_frown_right))[1]
         self._live_link_face.set_blendshape(
             FaceBlendShape.MouthFrownLeft, 1 - self._remap_blendshape(FaceBlendShape.MouthFrownLeft, mouth_frown_left))
         self._live_link_face.set_blendshape(
             FaceBlendShape.MouthFrownRight, 1 - self._remap_blendshape(FaceBlendShape.MouthFrownRight, mouth_frown_right))
 
         # todo: also strech when laughing, need to be fixed
-        mouth_left_stretch = mouth_corner_left[0] - self._get_landmark(287)[0]
-        mouth_right_stretch = self._get_landmark(57)[0] - mouth_corner_right[0]
-        mouth_center_left_stretch = mouth_center[0] - self._get_landmark(287)[0]
-        mouth_center_right_stretch = mouth_center[0] - self._get_landmark(57)[0]
+        mouth_left_stretch_point = self._get_landmark(self.blend_shape_config.CanonicalPpoints.mouth_left_stretch)
+        mouth_right_stretch_point = self._get_landmark(self.blend_shape_config.CanonicalPpoints.mouth_right_stretch)
+
+        # only interested in the axis coordinates here
+        mouth_left_stretch = mouth_corner_left[0] - mouth_left_stretch_point[0]
+        mouth_right_stretch = mouth_right_stretch_point[0] - mouth_corner_right[0]
+        mouth_center_left_stretch = mouth_center[0] - mouth_left_stretch_point[0]
+        mouth_center_right_stretch = mouth_center[0] - mouth_right_stretch_point[0]
 
         mouth_left = self._remap_blendshape(
             FaceBlendShape.MouthLeft, mouth_center_left_stretch)
@@ -187,8 +188,8 @@ class BlendshapeCalculator():
         self._live_link_face.set_blendshape(FaceBlendShape.JawRight, self._remap_blendshape(
             FaceBlendShape.JawRight, jaw_right_left))
 
-        lowest_lip = self._get_landmark(17)
-        under_lip = self._get_landmark(18)
+        lowest_lip = self._get_landmark(self.blend_shape_config.CanonicalPpoints.lowest_lip)
+        under_lip = self._get_landmark(self.blend_shape_config.CanonicalPpoints.under_lip)
 
         outer_lip_dist = math.dist(lower_lip, lowest_lip)
         upper_lip_dist = math.dist(upper_lip, upper_outer_lip)
@@ -206,7 +207,7 @@ class BlendshapeCalculator():
         self._live_link_face.set_blendshape(
             FaceBlendShape.MouthShrugUpper, 1 - self._remap_blendshape(FaceBlendShape.MouthShrugUpper, upper_lip_nose_dist))
 
-        over_upper_lip = self._get_landmark(164)
+        over_upper_lip = self._get_landmark(self.blend_shape_config.CanonicalPpoints.over_upper_lip)
         mouth_shrug_lower = math.dist(lowest_lip, over_upper_lip)
 
         self._live_link_face.set_blendshape(
@@ -230,15 +231,23 @@ class BlendshapeCalculator():
             self._live_link_face.set_blendshape(FaceBlendShape.MouthFunnel, 0)
 
         left_upper_press = math.dist(
-            self._get_landmark(40), self._get_landmark(80))
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.left_upper_press[0]), 
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.left_upper_press[1])
+        )
         left_lower_press = math.dist(
-            self._get_landmark(88), self._get_landmark(91))
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.left_lower_press[0]), 
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.left_lower_press[1])
+        )
         mouth_press_left = (left_upper_press + left_lower_press) / 2
 
         right_upper_press = math.dist(
-            self._get_landmark(270), self._get_landmark(310))
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.right_upper_press[0]), 
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.right_upper_press[1])
+        )
         right_lower_press = math.dist(
-            self._get_landmark(318), self._get_landmark(321))
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.right_lower_press[0]), 
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.right_lower_press[1])
+        )
         mouth_press_right = (right_upper_press + right_lower_press) / 2
 
         self._live_link_face.set_blendshape(
@@ -273,8 +282,8 @@ class BlendshapeCalculator():
             ratio = np.clip(eye_distance / max_ratio, 0, 2)
             return ratio
 
-        eye_open_ratio_left = get_eye_open_ration(points_eye_left)
-        eye_open_ratio_right = get_eye_open_ration(points_eye_right)
+        eye_open_ratio_left = get_eye_open_ration(self.blend_shape_config.CanonicalPpoints.eye_left)
+        eye_open_ratio_right = get_eye_open_ration(self.blend_shape_config.CanonicalPpoints.eye_right)
     
         blink_left = 1 - \
             self._remap_blendshape(
@@ -293,21 +302,33 @@ class BlendshapeCalculator():
         self._live_link_face.set_blendshape(FaceBlendShape.EyeWideRight, self._remap_blendshape(
             FaceBlendShape.EyeWideRight, eye_open_ratio_right))
 
-        squint_left = math.dist(self._get_landmark(253), self._get_landmark(450))
+        squint_left = math.dist(
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.squint_left[0]), 
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.squint_left[1])
+        )
         self._live_link_face.set_blendshape(
             FaceBlendShape.EyeSquintLeft, 1 - self._remap_blendshape(FaceBlendShape.EyeSquintLeft, squint_left))
-
-        squint_right = math.dist(self._get_landmark(23), self._get_landmark(230))
+  
+        squint_right = math.dist(
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.squint_right[0]), 
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.squint_right[1])
+        )
         self._live_link_face.set_blendshape(
             FaceBlendShape.EyeSquintRight, 1 - self._remap_blendshape(FaceBlendShape.EyeSquintRight, squint_right))
 
-        right_brow_lower = (self._get_landmark(
-            53) + self._get_landmark(52) + self._get_landmark(65)) / 3
-        right_brow_dist = math.dist(self._get_landmark(27), right_brow_lower)
+        right_brow_lower = (
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.right_brow_lower[0]) +
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.right_brow_lower[1]) +
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.right_brow_lower[2])
+        ) / 3
+        right_brow_dist = math.dist(self._get_landmark(self.blend_shape_config.CanonicalPpoints.right_brow), right_brow_lower)
 
-        left_brow_lower = (self._get_landmark(
-            283) + self._get_landmark(282) + self._get_landmark(295)) / 3
-        left_brow_dist = math.dist(self._get_landmark(257), left_brow_lower)
+        left_brow_lower = (
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.left_brow_lower[0]) +
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.left_brow_lower[1]) +
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.left_brow_lower[2])
+        ) / 3
+        left_brow_dist = math.dist(self._get_landmark(self.blend_shape_config.CanonicalPpoints.left_brow), left_brow_lower)
 
         self._live_link_face.set_blendshape(
             FaceBlendShape.BrowDownLeft, 1 - self._remap_blendshape(FaceBlendShape.BrowDownLeft, left_brow_dist))
@@ -319,18 +340,22 @@ class BlendshapeCalculator():
         self._live_link_face.set_blendshape(FaceBlendShape.BrowOuterUpRight, self._remap_blendshape(
             FaceBlendShape.BrowOuterUpRight, right_brow_dist))
 
-        inner_brow = self._get_landmark(9)
-        nose_tip = self._get_landmark(noseTip)
-        upper_nose = self._get_landmark(6)
+        inner_brow = self._get_landmark(self.blend_shape_config.CanonicalPpoints.inner_brow)
+        upper_nose = self._get_landmark(self.blend_shape_config.CanonicalPpoints.upper_nose)
         inner_brow_dist = math.dist(upper_nose, inner_brow)
 
         self._live_link_face.set_blendshape(FaceBlendShape.BrowInnerUp, self._remap_blendshape(
             FaceBlendShape.BrowInnerUp, inner_brow_dist))
 
         cheek_squint_left = math.dist(
-            self._get_landmark(359), self._get_landmark(342))
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.cheek_squint_left[0]), 
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.cheek_squint_left[1])
+        )
+
         cheek_squint_right = math.dist(
-            self._get_landmark(130), self._get_landmark(113))
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.cheek_squint_right[0]), 
+            self._get_landmark(self.blend_shape_config.CanonicalPpoints.cheek_squint_right[1])
+        )
 
         self._live_link_face.set_blendshape(
             FaceBlendShape.CheekSquintLeft, 1 - self._remap_blendshape(FaceBlendShape.CheekSquintLeft, cheek_squint_left))

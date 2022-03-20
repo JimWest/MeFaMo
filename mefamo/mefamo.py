@@ -23,6 +23,7 @@ from custom.face_geometry import (  # isort:skip
     procrustes_landmark_basis,
 )
 
+# points of the face model that will be used for SolvePnP later
 points_idx = [33, 263, 61, 291, 199]
 points_idx = points_idx + [key for (key, val) in procrustes_landmark_basis]
 points_idx = list(set(points_idx))
@@ -245,11 +246,16 @@ class Mefamo():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', default='0', help='Video source. Can be an integer for webcam or a string for a video file.')
-    parser.add_argument('--ip', default='192.168.0.122', help='IP address of the MediaPipe server.')
-    parser.add_argument('--port', default=11111, help='Port of the MediaPipe server.')
-    parser.add_argument('--show_3d', action='store_true', help='Show the 3d face image.')    
-    parser.add_argument('--hide_image', action='store_true', help='Hide the image window.')    
+    parser.add_argument('--input', default='0',
+                        help='Video source. Can be an integer for webcam or a string for a video file.')
+    parser.add_argument('--ip', default='127.0.0.1',
+                        help='IP address of the MediaPipe server.')
+    parser.add_argument('--port', default=11111,
+                        help='Port of the MediaPipe server.')
+    parser.add_argument('--show_3d', action='store_true',
+                        help='Show the 3d face image (projected into a 2d window')
+    parser.add_argument('--hide_image', action='store_true',
+                        help='Hide the image window.')
     args = parser.parse_args()
 
     mediapipe_face = Mefamo(args)
