@@ -13,7 +13,7 @@ from kivy.uix.actionbar import ActionBar, ActionButton, ActionGroup, ActionView
 from kivy.graphics.texture import Texture
 import cv2
 
-from mefamo.mefamo import Mefamo 
+from mefamo import Mefamo 
 
 class MediapipeFaceGUI(App):
 
@@ -37,7 +37,7 @@ class MediapipeFaceGUI(App):
         # layout.add_widget(action_bar)
         layout.add_widget(self.img1)
 
-        self.mdpf = Mefamo() 
+        self.mdpf = Mefamo(hide_image=True) 
         mdpf_thread = threading.Thread(target=self.mdpf.start, daemon=True)
         mdpf_thread.start()
 

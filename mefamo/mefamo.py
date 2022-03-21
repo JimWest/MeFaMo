@@ -13,8 +13,8 @@ import argparse
 
 from pylivelinkface import PyLiveLinkFace, FaceBlendShape
 
-from drawing import draw_landmark_point, draw_3d_face
-from blendshape_calculator import BlendshapeCalculator
+from utils.drawing import draw_landmark_point, draw_3d_face
+from blendshapes.blendshape_calculator import BlendshapeCalculator
 
 # taken from: https://github.com/Rassibassi/mediapipeDemos
 from custom.face_geometry import (  # isort:skip
@@ -70,11 +70,11 @@ def calculate_rotation(face_landmarks, pcf: PCF, image_shape):
 
    
 class Mefamo():
-    def __init__(self, args) -> None:
+    def __init__(self, input = 0, ip = '127.0.0.1', port = 11111, show_3d = False, hide_image = False ) -> None:
 
-        self.input = args.input
-        self.show_image = not args.hide_image
-        self.show_3d = args.show_3d
+        self.input = input
+        self.show_image = not hide_image
+        self.show_3d = show_3d
 
         self.face_mesh = face_mesh.FaceMesh(
             max_num_faces=1,
@@ -85,8 +85,8 @@ class Mefamo():
         self.live_link_face = PyLiveLinkFace(fps = 30, filter_size = 4)
         self.blendshape_calulator = BlendshapeCalculator()
 
-        self.ip = args.ip
-        self.upd_port = args.port
+        self.ip = ip
+        self.upd_port = port
         
         self.image_height, self.image_width, channels = (480, 640, 3)
 
@@ -148,7 +148,8 @@ class Mefamo():
                     print("Ignoring empty camera frame.")
                     continue
                 if not self._process_image(image):
-                    break                    
+                    break    
+            print("Video capture received no more frames.")                
             cap.release()
         
         else:
@@ -215,8 +216,8 @@ class Mefamo():
                 # calculate the head rotation out of the pose matrix
                 eulerAngles = transforms3d.euler.mat2euler(pose_transform_mat)
                 pitch = -eulerAngles[0]
-                yaw = -eulerAngles[1]
-                roll = -eulerAngles[2]
+                yaw = eulerAngles[1]
+                roll = eulerAngles[2]
                 self.live_link_face.set_blendshape(
                     FaceBlendShape.HeadPitch, pitch)
                 self.live_link_face.set_blendshape(
@@ -249,14 +250,14 @@ if __name__ == "__main__":
     parser.add_argument('--input', default='0',
                         help='Video source. Can be an integer for webcam or a string for a video file.')
     parser.add_argument('--ip', default='127.0.0.1',
-                        help='IP address of the MediaPipe server.')
+                        help='IP address of the Unreal LiveLink server.')
     parser.add_argument('--port', default=11111,
-                        help='Port of the MediaPipe server.')
+                        help='Port of the Unreal LiveLink server.')
     parser.add_argument('--show_3d', action='store_true',
                         help='Show the 3d face image (projected into a 2d window')
     parser.add_argument('--hide_image', action='store_true',
                         help='Hide the image window.')
     args = parser.parse_args()
 
-    mediapipe_face = Mefamo(args)
+    mediapipe_face = Mefamo(args.input, args.ip, args.port, args.show_3d, args.hide_image)
     mediapipe_face.start()

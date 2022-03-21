@@ -49,3 +49,4 @@ dist/**
 /custom/__pycache__
 /*.spec
 /.vscode
+/Mefamo_MediapipeFaceMocap.egg-info
