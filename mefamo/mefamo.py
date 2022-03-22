@@ -9,15 +9,14 @@ import time
 import math
 import transforms3d
 import open3d as o3d
-import argparse
 
 from pylivelinkface import PyLiveLinkFace, FaceBlendShape
 
-from utils.drawing import draw_landmark_point, draw_3d_face
-from blendshapes.blendshape_calculator import BlendshapeCalculator
+from mefamo.utils.drawing import Drawing
+from mefamo.blendshapes.blendshape_calculator import BlendshapeCalculator
 
 # taken from: https://github.com/Rassibassi/mediapipeDemos
-from custom.face_geometry import (  # isort:skip
+from mefamo.custom.face_geometry import (  # isort:skip
     PCF,
     get_metric_landmarks,
     procrustes_landmark_basis,
@@ -185,7 +184,7 @@ class Mefamo():
                 pose_transform_mat, metric_landmarks, rotation_vector, translation_vector = calculate_rotation(face_landmarks, self.pcf, image.shape)  
                 # draw a 3d image of the face
                 if self.show_3d:
-                    face_image_3d = draw_3d_face(metric_landmarks, image)
+                    face_image_3d = Drawing.draw_3d_face(metric_landmarks, image)
 
                 # draw the face mesh 
                 drawing_utils.draw_landmarks(
@@ -206,8 +205,8 @@ class Mefamo():
                     .get_default_face_mesh_contours_style())
             
                  # draw iris points
-                image = draw_landmark_point(face_landmarks.landmark[468], image, color = (0, 0, 255))
-                image = draw_landmark_point(face_landmarks.landmark[473], image, color = (0, 255, 0))
+                image = Drawing.draw_landmark_point(face_landmarks.landmark[468], image, color = (0, 0, 255))
+                image = Drawing.draw_landmark_point(face_landmarks.landmark[473], image, color = (0, 255, 0))
 
                 # calculate and set all the blendshapes                
                 self.blendshape_calulator.calculate_blendshapes(
@@ -243,21 +242,3 @@ class Mefamo():
             self.network_data = self.live_link_face.encode()
 
         return True
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--input', default='0',
-                        help='Video source. Can be an integer for webcam or a string for a video file.')
-    parser.add_argument('--ip', default='127.0.0.1',
-                        help='IP address of the Unreal LiveLink server.')
-    parser.add_argument('--port', default=11111,
-                        help='Port of the Unreal LiveLink server.')
-    parser.add_argument('--show_3d', action='store_true',
-                        help='Show the 3d face image (projected into a 2d window')
-    parser.add_argument('--hide_image', action='store_true',
-                        help='Hide the image window.')
-    args = parser.parse_args()
-
-    mediapipe_face = Mefamo(args.input, args.ip, args.port, args.show_3d, args.hide_image)
-    mediapipe_face.start()

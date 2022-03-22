@@ -35,9 +35,9 @@ python setup.py install
  
 ## Usage
 
-To use MeFaMo, just execute the mefamo.py file:
+To use MeFaMo, just execute the mefamo_cli.py file in the examples folder:
 ```
-python mefamo.py
+python mefamo_cli.py
 ```
 
 There's also an experemental GUI (which doesn't look different to the default executable, but uses kivy for future work).

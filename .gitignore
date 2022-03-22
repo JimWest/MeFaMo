@@ -51,3 +51,6 @@ dist/**
 /.vscode
 /Mefamo_MediapipeFaceMocap.egg-info
 /mefamo/*.spec
+/mefamo/build/mefamo
+/mefamo/dist
+/examples/*.spec
