@@ -11,7 +11,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'numpy',
-        'cv2',
+        'opencv-python',
         'pylivelinkface',
         'mediapipe',
         'transforms3d',
