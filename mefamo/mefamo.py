@@ -69,11 +69,12 @@ def calculate_rotation(face_landmarks, pcf: PCF, image_shape):
 
    
 class Mefamo():
-    def __init__(self, input = 0, ip = '127.0.0.1', port = 11111, show_3d = False, hide_image = False ) -> None:
+    def __init__(self, input = 0, ip = '127.0.0.1', port = 11111, show_3d = False, hide_image = False, show_debug = False) -> None:
 
         self.input = input
         self.show_image = not hide_image
         self.show_3d = show_3d
+        self.show_debug = show_debug
 
         self.face_mesh = face_mesh.FaceMesh(
             max_num_faces=1,
@@ -226,14 +227,31 @@ class Mefamo():
         # Flip the image horizontally for a selfie-view display.
         self.image = cv2.flip(image, 1).astype('uint8')
 
+        # Debug format settings
+        white_bg = 0 * np.ones(shape=[720, 720, 3], dtype=np.uint8)
+        text_coordinates = [25, 25]
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        font_scale = 0.50
+        color = (0, 255, 0)
+
         if self.show_image:
             cv2.imshow('MediaPipe Face Mesh', image.astype('uint8'))  
             if face_image_3d is not None and type(face_image_3d) == o3d.geometry.Image: 
                 # show the 3d image if it exists
                 img_3d = np.asarray(face_image_3d)
                 img_3d = cv2.flip(img_3d, 1)
-                cv2.imshow('Open3D Image', np.asarray(face_image_3d))   
-                        
+                cv2.imshow('Open3D Image', np.asarray(face_image_3d)) 
+
+            if self.show_debug:
+                for shape in FaceBlendShape:
+                    shape_debug_text = f'{shape.name}: {self.live_link_face.get_blendshape(FaceBlendShape(shape.value)):.3f}'
+                    cv2.putText(img=white_bg, text=shape_debug_text, org=tuple(text_coordinates), fontFace=font, fontScale=font_scale, color=color, thickness=1)
+                    text_coordinates[1] += 20
+                    if shape.value == 30: #start new column
+                        text_coordinates = [300, 25]
+
+                cv2.imshow('Debug', white_bg)
+
             if cv2.waitKey(1) & 0xFF == 27:
                 return False
 
