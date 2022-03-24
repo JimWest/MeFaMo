@@ -215,9 +215,9 @@ class Mefamo():
 
                 # calculate the head rotation out of the pose matrix
                 eulerAngles = transforms3d.euler.mat2euler(pose_transform_mat)
-                pitch = eulerAngles[0]
-                yaw = -eulerAngles[1]
-                roll = -eulerAngles[2]
+                pitch = -eulerAngles[0]
+                yaw = eulerAngles[1]
+                roll = eulerAngles[2]
                 self.live_link_face.set_blendshape(
                     FaceBlendShape.HeadPitch, pitch)
                 self.live_link_face.set_blendshape(
