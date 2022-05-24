@@ -167,7 +167,7 @@ class BlendshapeCalculator():
         stretch_normal_right = -0.7 + 0.42 * \
             mouth_smile_right + (0.36 * mouth_right)
         stretch_max_right = -0.45 + \
-            (0.45 * mouth_smile_right) + (0.36 * mouth_left)
+            (0.45 * mouth_smile_right) + (0.36 * mouth_right )
 
         self._live_link_face.set_blendshape(FaceBlendShape.MouthStretchLeft, self._remap(
             mouth_left_stretch, stretch_normal_left, stretch_max_left))
