@@ -53,3 +53,18 @@ If you want to see the normalized 3d points of the detected face (projected on a
 The parameter'--hide_image` will hide the 2d webcam image with keypoint overlay.
 
 There's also an experemental GUI (which doesn't look different to the default executable, but uses kivy for future work).
+
+
+## Build the exe yourself
+
+In order to build an exe from all needed python libs and files, pyinstaller was used.
+It can be installed via pip:
+```
+pip install pyinstaller
+```
+
+After that, you can use pyinstaller and the included mefamo.spec file under examples to build the exe:
+```
+pyinstaller --onefile .\examples\mefamo.spec
+```
+This will take a bit time, you'll find the exe then in the `mefamo\dist\` folder.
