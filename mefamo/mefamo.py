@@ -10,7 +10,7 @@ import math
 import transforms3d
 import open3d as o3d
 
-from pylivelinkface import PyLiveLinkFace, FaceBlendShape
+from mefamo.pylivelinkface.pylivelinkface import PyLiveLinkFace, FaceBlendShape
 
 from mefamo.utils.drawing import Drawing
 from mefamo.blendshapes.blendshape_calculator import BlendshapeCalculator
@@ -58,7 +58,7 @@ def calculate_rotation(face_landmarks, pcf: PCF, image_shape):
     )
 
     success, rotation_vector, translation_vector = cv2.solvePnP(
-        model_points,
+        model_points,   
         image_points,
         camera_matrix,
         dist_coeff,
