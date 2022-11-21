@@ -150,8 +150,7 @@ class BlendshapeCalculator():
         mouth_left_stretch = mouth_corner_left[0] - mouth_left_stretch_point[0]
         mouth_right_stretch = mouth_right_stretch_point[0] - mouth_corner_right[0]
         mouth_center_left_stretch = mouth_center[0] - mouth_left_stretch_point[0]
-        mouth_center_right_stretch = mouth_ce
-        nter[0] - mouth_right_stretch_point[0]
+        mouth_center_right_stretch = mouth_center[0] - mouth_right_stretch_point[0]
 
         mouth_left = self._remap_blendshape(
             FaceBlendShape.MouthLeft, mouth_center_left_stretch)
