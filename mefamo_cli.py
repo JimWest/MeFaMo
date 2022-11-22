@@ -1,4 +1,4 @@
-from mefamo import Mefamo
+from mefamo.mefamo import Mefamo
 from argparse import ArgumentParser
 
 if __name__ == "__main__":

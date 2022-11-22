@@ -96,7 +96,7 @@ class BlendShapeConfig:
             # FaceBlendShape.NoseSneerLeft : (-0.4, 0.0),
             # FaceBlendShape.NoseSneerRight : (-0.4, 0.0),
             # FaceBlendShape.TongueOut : (-0.4, 0.0),
-            # FaceBlendShape.HeadYaw : (-0.4, 0.0),
+            # FaceBlendShape.67 : (-0.4, 0.0),
             # FaceBlendShape.HeadPitch : (-0.4, 0.0),
             # FaceBlendShape.HeadRoll : (-0.4, 0.0),
             # FaceBlendShape.LeftEyeYaw : (-0.4, 0.0),

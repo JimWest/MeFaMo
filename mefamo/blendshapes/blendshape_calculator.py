@@ -103,14 +103,18 @@ class BlendshapeCalculator():
         jaw_open_ratio = jaw_nose_dist / head_height
 
         # self._live_link_face.set_blendshape(ARKitFace.MouthFrownRight, max(min(mouth_frown_right, 1), 0))
+
         jaw_open = self._remap_blendshape(
             FaceBlendShape.JawOpen, jaw_open_ratio)
         self._live_link_face.set_blendshape(FaceBlendShape.JawOpen, jaw_open)
-
+        
         mouth_open = self._remap_blendshape(
             FaceBlendShape.MouthClose, mouth_center_nose_dist - mouth_open_dist)
         self._live_link_face.set_blendshape(
             FaceBlendShape.MouthClose, mouth_open)
+        
+        print(mouth_open)
+
 
         # TODO mouth open but teeth closed
         smile_left = upper_lip[1] - mouth_corner_left[1]
