@@ -86,7 +86,7 @@ class Mefamo():
         self.blendshape_calulator = BlendshapeCalculator()
 
         self.ip = ip
-        self.upd_port = port
+        self.upd_port = int(port)
         
         self.image_height, self.image_width, channels = (480, 640, 3)
 
