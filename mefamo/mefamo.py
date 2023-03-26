@@ -160,11 +160,10 @@ class Mefamo():
 
     def _network_loop(self):
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:            
-            s.connect((self.ip, self.upd_port))
             while True: 
                 with self.lock:
                     if self.got_new_data:                               
-                        s.sendall(self.network_data)
+                        s.sendto(self.network_data, (self.ip, self.upd_port))
                         self.got_new_data = False
                 time.sleep(0.01)
 
